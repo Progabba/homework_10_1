@@ -12,6 +12,3 @@ def sorted_by_date(input_list: list, ascending: bool = True) -> list:
      порядок сортировки (убывание, возрастание)."""
     sorted_list = sorted(input_list, key=lambda q: q.get("date"), reverse=ascending)
     return sorted_list
-
-
-
