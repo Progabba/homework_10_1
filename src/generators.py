@@ -1,3 +1,5 @@
+from typing import Any, Dict, List
+
 transactions = [
     {
         "id": 939719570,
@@ -47,27 +49,27 @@ transactions = [
 ]
 
 
-def filter_by_currency(list_bank: list, valuta: str):
+def filter_by_currency(list_bank: List[Dict[str, Any]], valuta: str):
     for transaction in list_bank:
-        if transaction["operationAmount"]["currency"]["name"] == valuta:
+        if transaction.get("operationAmount").get("currency").get("name") == valuta:
             yield transaction
 
 
-usd_transactions = filter_by_currency(transactions, "USD")
-
-for _ in range(2):
-    print(next(usd_transactions)["id"])
+# usd_transactions = filter_by_currency(transactions, "USD")
+#
+# for _ in range(2):
+#     print(next(usd_transactions)["id"])
 
 
 def transaction_descriptions(list_bank: list):
     for transaction in list_bank:
-        yield transaction["description"]
+        yield transaction.get("description")
 
 
-descriptions = transaction_descriptions(transactions)
-
-for _ in range(5):
-    print(next(descriptions))
+# descriptions = transaction_descriptions(transactions)
+#
+# for _ in range(5):
+#     print(next(descriptions))
 
 
 def card_number_generator(start: int, end: int):
@@ -76,8 +78,3 @@ def card_number_generator(start: int, end: int):
         while len(number_str) < 16:
             number_str = "0" + number_str  # Добавляем ведущие нули
         yield f"{number_str[:4]} {number_str[4:8]} {number_str[8:12]} {number_str[12:]}"
-
-
-# Пример вызова функции:
-for card_number in card_number_generator(1, 5):
-    print(card_number)
