@@ -1,0 +1,9 @@
+my_function ok
+my_function ok
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 3), {}
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 3), {}
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 3), {}
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 3), {}
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 3), {}
+my_function ok
+my_function error: my_function() takes 2 positional arguments but 3 were given. Inputs: (1, 2, 4), {}

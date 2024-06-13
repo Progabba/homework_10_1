@@ -1,0 +1,4 @@
+test_func ok
+test_func ok
+test_func ok
+test_func error: Test error. Inputs: (1, 2), {}
