@@ -12,9 +12,9 @@ def get_convert(code_, amount_):
     headers = {"apikey": apikey}
 
     responce = requests.get(url, headers=headers, params=payload)
-    amount_ = responce.json()["result"]
-    return amount_
+
+    return responce.json()["result"]
 
 
 if __name__ == "__main__":
-    print(get_convert("USD", "100"))
+    print(get_convert("USD", "1"))
