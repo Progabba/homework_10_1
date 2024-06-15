@@ -70,14 +70,14 @@ def test_sorted_by_date(processing_conf):
     ]
 
 
-@patch('requests.get')
+@patch("requests.get")
 def test_get_convert(mock_get):
-    mock_get.return_value.json.return_value = {'result': 1}
+    mock_get.return_value.json.return_value = {"result": 1}
     assert get_convert("USD", 1) == 1
     mock_get.assert_called_once_with(
-        'https://api.apilayer.com/exchangerates_data/convert',
+        "https://api.apilayer.com/exchangerates_data/convert",
         headers={"apikey": os.getenv("API_KEY")},
-        params={"amount": 1, "from": "USD", "to": "RUB"}
+        params={"amount": 1, "from": "USD", "to": "RUB"},
     )
 
 

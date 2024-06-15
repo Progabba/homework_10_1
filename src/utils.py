@@ -5,12 +5,14 @@ import logging
 from src.external_api import get_convert
 
 
-logger = logging.getLogger('utils')
+logger = logging.getLogger("utils")
 logger.setLevel(logging.INFO)
-file_handler = logging.FileHandler('../logs/utils.log', mode='w')
-file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler = logging.FileHandler("../logs/utils.log", mode="w")
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
+
+
 def load_transactions(file_path: str) -> list:
     """которая принимает на вход путь до JSON-файла и возвращает список словарей с данными о
     финансовых транзакциях.
@@ -35,7 +37,7 @@ def load_transactions(file_path: str) -> list:
                 logger.warning(f"Файл {full_path} не содержит список транзакций")
                 return []
 
-    except (json.JSONDecodeError, IOError):
+    except (json.JSONDecodeError, IOError) as e:
         logger.error(f"Ошибка при чтении файла {full_path}: {e}")
         return []
 
