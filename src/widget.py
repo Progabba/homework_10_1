@@ -1,5 +1,13 @@
+import logging
 from datetime import datetime
 
+
+logger = logging.getLogger('widget')
+logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler('../logs/widget.log', mode='w')
+file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
 
 def get_mask_card(card_number: str) -> str:
     """Функция возвращает номер карты с маской"""
