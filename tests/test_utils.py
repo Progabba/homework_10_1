@@ -1,6 +1,11 @@
+import os
+from unittest.mock import patch, mock_open
+
 import pytest
 
+from src.external_api import get_convert
 from src.processing import filter_by_state, sorted_by_date
+from src.utils import load_transactions
 from src.widget import get_changed_formate_time, get_count_nams, get_mask_account, get_mask_card
 
 
@@ -63,3 +68,22 @@ def test_sorted_by_date(processing_conf):
         {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
         {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
     ]
+
+
+@patch('requests.get')
+def test_get_convert(mock_get):
+    mock_get.return_value.json.return_value = {'result': 1}
+    assert get_convert("USD", 1) == 1
+    mock_get.assert_called_once_with(
+        'https://api.apilayer.com/exchangerates_data/convert',
+        headers={"apikey": os.getenv("API_KEY")},
+        params={"amount": 1, "from": "USD", "to": "RUB"}
+    )
+
+
+@patch("builtins.open", new_callable=mock_open, read_data='[{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]')
+@patch("os.path.exists", return_value=True)
+def test_load_transactions(mock_exists, mock_open_file):
+    expected_data = [{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]
+    result = load_transactions("test_file.json")
+    assert result == expected_data, f"Expected {expected_data}, but got {result}"
