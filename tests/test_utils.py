@@ -1,11 +1,13 @@
 import os
 from unittest.mock import patch, mock_open
 
+import pandas as pd
 import pytest
+
 
 from src.external_api import get_convert
 from src.processing import filter_by_state, sorted_by_date
-from src.utils import load_transactions
+from src.utils import load_transactions, load_transactions_xlsx, load_transactions_csv
 from src.widget import get_changed_formate_time, get_count_nams, get_mask_account, get_mask_card
 
 
@@ -87,3 +89,18 @@ def test_load_transactions(mock_exists, mock_open_file):
     expected_data = [{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]
     result = load_transactions("test_file.json")
     assert result == expected_data, f"Expected {expected_data}, but got {result}"
+
+
+
+@patch('src.utils.pd.read_csv')
+def test_load_transactions_csv(mock_read_csv):
+    mock_data = pd.DataFrame([{"column1": "value1", "column2": "value2"}])
+    mock_read_csv.return_value = mock_data
+    assert load_transactions_csv('file_path') == [{"column1": "value1", "column2": "value2"}]
+
+
+@patch('src.utils.pd.read_excel')
+def load_transactions_xlsx(mock_read_excel):
+    mock_data = pd.DataFrame([{"column1": "value1", "column2": "value2"}])
+    mock_read_excel.return_value = mock_data
+    assert load_transactions_xlsx('file_path') == [{"column1": "value1", "column2": "value2"}]

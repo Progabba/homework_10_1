@@ -87,11 +87,11 @@ if __name__ == "__main__":
     # transactions = load_transactions("data/operations.json")
     # print(transactions)
     #
-    # transactions_csv = load_transactions_csv("data/transactions.csv")
-    # print(transactions_csv)
+    transactions_csv = load_transactions_csv("data/transactions.csv")
+    print(transactions_csv)
 
-    transactions_xlsx = load_transactions_xlsx("data/transactions_excel.xlsx")
-    print(transactions_xlsx)
+    # transactions_xlsx = load_transactions_xlsx("data/transactions_excel.xlsx")
+    # print(transactions_xlsx)
 
     amount = get_amount(
         {
