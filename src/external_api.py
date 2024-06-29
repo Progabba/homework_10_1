@@ -17,4 +17,4 @@ def get_convert(code_, amount_):
 
 
 if __name__ == "__main__":
-    print(get_convert("USD", "1"))
+    print(get_convert("USD", "100"))

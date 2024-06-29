@@ -42,11 +42,14 @@ def get_count_nams(nums: int | str) -> str:
 def get_super_mask(nums: str) -> str:
     """Функция возвращает исходную строку с замаскированным номером карты/счета"""
     logger.info("Получение супер маски для строки")
-    nums_list = nums.split()
-    nums_list[-1] = get_count_nams(nums_list[-1])
-    masked_str = " ".join(nums_list)
-    logger.debug(f"Замаскированная строка: {masked_str}")
-    return masked_str
+    if nums is None:
+        return ""
+    else:
+        nums_list = nums.split()
+        nums_list[-1] = get_count_nams(nums_list[-1])
+        masked_str = " ".join(nums_list)
+        logger.debug(f"Замаскированная строка: {masked_str}")
+        return masked_str
 
 
 def get_changed_formate_time(date_time: str) -> str:
@@ -58,10 +61,9 @@ def get_changed_formate_time(date_time: str) -> str:
 
 
 if __name__ == "__main__":
-    logger.info("Запуск программы")
-    print(get_mask_card("1234567812345678"))
-    print(get_mask_account("12345678"))
-    print(get_count_nams("1234567812345678"))
-    print(get_super_mask("1234 5678 1234 5678"))
-    print(get_changed_formate_time("2023-06-16T10:15:30"))
-    logger.info("Завершение программы")
+    # logger.info("Запуск программы")
+    # print(get_mask_card("1234567812345678"))
+    # print(get_mask_account("12345678"))
+    # print(get_count_nams("1234567812345678"))
+    print(get_super_mask("Visa Platinum 8990922113665229"))
+    # print(get_changed_formate_time("2023-06-16T10:15:30"))

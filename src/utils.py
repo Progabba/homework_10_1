@@ -5,7 +5,7 @@ import pandas as pd
 import re
 
 from src.external_api import get_convert
-
+from src.widget import get_changed_formate_time, get_super_mask
 
 logger = logging.getLogger("utils")
 logger.setLevel(logging.INFO)
@@ -86,31 +86,73 @@ def load_transactions_xlsx(file_path: str) -> list:
         logger.error(f"Ошибка при чтении XLSX файла {file_path}: {e}")
         return []
 
-def search_operations(data:dict, search_string:list) -> list:
+
+def search_operations(data: dict, search_string: str) -> list:
     """
     Функция для поиска операций по заданной строке в описании
     """
     results = []
     for item in data:
-        if 'description' in item:
-            if re.search(search_string, item['description'], re.IGNORECASE):
+        if "description" in item and isinstance(item["description"], str):
+            if re.search(search_string, item["description"], re.IGNORECASE):
                 results.append(item)
+    logger.info(f"Успешно отфильтровано {len(results)} транзакций ")
     return results
 
+
+def count_operations_by_category(data: dict, categories: list) -> list:
+    """
+    Функция для подсчета количества операций по категориям.
+
+    """
+    category_counts = {category: 0 for category in categories}
+
+    for item in data:
+        if "description" in item and isinstance(item["description"], str):
+            description = item["description"]
+            matched = False
+            for category in categories:
+                if category.lower() in description.lower():
+                    category_counts[category] += 1
+                    matched = True
+                    break
+            if not matched:
+                category_counts["Other"] = category_counts.get("Other", 0) + 1
+
+    return category_counts
+
+
+def print_operations(transaction: dict) -> None:
+    """
+    Функция возвращает конечный вид
+    """
+    if not transaction:
+        print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+    else:
+        print(f"Программа: Всего банковских операций в выборке: {len(transaction)}\n")
+        for op in transaction:
+            print(
+                f"{get_changed_formate_time(op.get('date'))} {op['description']}\n{get_super_mask(op.get('from'))} -> "
+                f"{get_super_mask(op.get('to'))}\nСумма: {op.get('operationAmount').get('amount')} "
+                f"{op.get('operationAmount').get('currency').get('name')}\n"
+            )
 
 
 if __name__ == "__main__":
     transactions = load_transactions("data/operations.json")
-    print(transactions)
-    print('\n' * 20)
+    r = search_operations(transactions, "Открытие")
+    print(r)
+    print("\n" * 10)
 
     transactions_csv = load_transactions_csv("data/transactions.csv")
-    print(transactions_csv)
-    print('\n' * 20)
-
+    r = search_operations(transactions_csv, "Перевод")
+    print(r)
+    print("\n" * 10)
+    #
     transactions_xlsx = load_transactions_xlsx("data/transactions_excel.xlsx")
-    print(transactions_xlsx)
-    print('\n' * 20)
+    r = search_operations(transactions_xlsx, "Открытие")
+    print(r)
+    print("\n" * 10)
 
     # amount = get_amount(
     #     {
