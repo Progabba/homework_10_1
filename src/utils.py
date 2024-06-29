@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import pandas as pd
+import re
 
 from src.external_api import get_convert
 
@@ -54,6 +55,8 @@ def get_amount(transaction: dict) -> float:
         return get_convert(code_, amount_)
     else:
         return amount_
+
+
 def load_transactions_csv(file_path: str) -> list:
     """Функция для чтения транзакций из CSV-файла и возвращения списка словарей с данными о транзакциях."""
     logger.info(f"Загрузка транзакций из CSV файла: {file_path}")
@@ -61,7 +64,7 @@ def load_transactions_csv(file_path: str) -> list:
     full_path = os.path.join(base_path, "..", file_path)
     try:
         df = pd.read_csv(full_path)
-        transactions = df.to_dict(orient='records')
+        transactions = df.to_dict(orient="records")
         logger.info(f"Успешно загружено {len(transactions)} транзакций из CSV файла")
         return transactions
     except Exception as e:
@@ -75,34 +78,50 @@ def load_transactions_xlsx(file_path: str) -> list:
     base_path = os.path.dirname(__file__)
     full_path = os.path.join(base_path, "..", file_path)
     try:
-        df = pd.read_excel(full_path, engine='openpyxl')
-        transactions = df.to_dict(orient='records')
+        df = pd.read_excel(full_path, engine="openpyxl")
+        transactions = df.to_dict(orient="records")
         logger.info(f"Успешно загружено {len(transactions)} транзакций из XLSX файла")
         return transactions
     except Exception as e:
         logger.error(f"Ошибка при чтении XLSX файла {file_path}: {e}")
         return []
 
+def search_operations(data:dict, search_string:list) -> list:
+    """
+    Функция для поиска операций по заданной строке в описании
+    """
+    results = []
+    for item in data:
+        if 'description' in item:
+            if re.search(search_string, item['description'], re.IGNORECASE):
+                results.append(item)
+    return results
+
+
+
 if __name__ == "__main__":
-    # transactions = load_transactions("data/operations.json")
-    # print(transactions)
-    #
+    transactions = load_transactions("data/operations.json")
+    print(transactions)
+    print('\n' * 20)
+
     transactions_csv = load_transactions_csv("data/transactions.csv")
     print(transactions_csv)
+    print('\n' * 20)
 
-    # transactions_xlsx = load_transactions_xlsx("data/transactions_excel.xlsx")
-    # print(transactions_xlsx)
+    transactions_xlsx = load_transactions_xlsx("data/transactions_excel.xlsx")
+    print(transactions_xlsx)
+    print('\n' * 20)
 
-    amount = get_amount(
-        {
-            "id": 522357576,
-            "state": "EXECUTED",
-            "date": "2019-07-12T20:41:47.882230",
-            "operationAmount": {"amount": "51463.70", "currency": {"name": "USD", "code": "USD"}},
-            "description": "Перевод организации",
-            "from": "Счет 48894435694657014368",
-            "to": "Счет 38976430693692818358",
-        }
-    )
-
-    print(amount)
+    # amount = get_amount(
+    #     {
+    #         "id": 522357576,
+    #         "state": "EXECUTED",
+    #         "date": "2019-07-12T20:41:47.882230",
+    #         "operationAmount": {"amount": "51463.70", "currency": {"name": "USD", "code": "USD"}},
+    #         "description": "Перевод организации",
+    #         "from": "Счет 48894435694657014368",
+    #         "to": "Счет 38976430693692818358",
+    #     }
+    # )
+    #
+    # print(amount)
