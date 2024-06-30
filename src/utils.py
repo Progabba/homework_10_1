@@ -3,6 +3,7 @@ import json
 import logging
 import pandas as pd
 import re
+from collections import Counter
 
 from src.external_api import get_convert
 from src.widget import get_changed_formate_time, get_super_mask
@@ -105,21 +106,13 @@ def count_operations_by_category(data: dict, categories: list) -> list:
     Функция для подсчета количества операций по категориям.
 
     """
-    category_counts = {category: 0 for category in categories}
-
-    for item in data:
-        if "description" in item and isinstance(item["description"], str):
-            description = item["description"]
-            matched = False
-            for category in categories:
-                if category.lower() in description.lower():
-                    category_counts[category] += 1
-                    matched = True
-                    break
-            if not matched:
-                category_counts["Other"] = category_counts.get("Other", 0) + 1
-
-    return category_counts
+    def count_operations_by_category(operations, categories):
+        category_counter = Counter()
+        for operation in operations:
+            category = operation.get('category')
+            if category in categories:
+                category_counter[category] += 1
+        return dict(category_counter)
 
 
 def print_operations(transaction: dict) -> None:
